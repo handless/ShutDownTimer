@@ -15,8 +15,19 @@ namespace ShutDownTimer
 
         private void buttonRun_Click(object sender, EventArgs e)
         {
-            // Присваеваем атрибуту текущее время + 5 минут
-            ShutDownTime = DateTime.Now.AddMinutes(5);
+            try
+            {
+                string varTimes = cBTimerHours.SelectedItem.ToString();
+                ShutDownTime = DateTime.Now.AddHours(Int32.Parse(varTimes));
+                varTimes = cbTimerMinutes.SelectedItem.ToString();
+                ShutDownTime = ShutDownTime.AddMinutes(Int32.Parse(varTimes));
+
+            }
+            catch (Exception q)
+            {
+                MessageBox.Show("Ошибка ввода времени: " + q.Message);
+                Application.Exit();
+            }
 
             // Запускаем наш таймер
             timer.Start();
@@ -29,16 +40,24 @@ namespace ShutDownTimer
                 // Высчитываем отрезок времени (Время выключения - Текущее время) 
                 TimeSpan ts = ShutDownTime - DateTime.Now;
                 // Выводим на наш label который у меня называется labelInfo
-                labelInfo.Text = "Осталось времени: " + ts.Minutes + " min " +
+                labelInfo.Text = "Осталось времени: "+ ts.Hours + " hours " + ts.Minutes + " min " +
                     ts.Seconds + " sec";
             }
             else 
             {
+                MessageBox.Show("Выключение");
+                timer.Stop();
                //Вызываем процесс shutdown который собственно и выключит наш компьютер.
-                Process.Start("shutdown", "/s /t 0");
+               // Process.Start("shutdown", "/s /t 0");
+                
                 Close();
             }
 
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            timer.Stop();
         }
     }
 }
